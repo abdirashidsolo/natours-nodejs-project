@@ -20,10 +20,10 @@ const createTokenAndSend = (user, statusCode, res) => {
       Date.now() + process.env.COOKIE_JWT_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
 
-    // httpOnly: true,
+    httpOnly: true,
   };
 
-  if (process.env.NODE_ENV !== 'production') cookieOptions.secure = true;
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
   res.cookie('JWT', token, cookieOptions);
   user.password = undefined;
