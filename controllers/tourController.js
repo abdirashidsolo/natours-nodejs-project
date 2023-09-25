@@ -154,14 +154,14 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 });
 
 // exports.getAlltours = catchAsync(async (req, res, next) => {
-// console.log(req.query);
+// (req.query);
 // BUILD QUERY
 // // 1) filtering
 // const queryObj = { ...req.query };
 // const excludedFields = ['page', 'sort', 'fields', 'limit'];
 // excludedFields.forEach((field) => delete queryObj[field]);
 
-// // console.log(req.query);
+// // (req.query);
 
 // // 1A) advanced filtering
 // let objectStr = JSON.stringify(queryObj);
@@ -222,7 +222,7 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 // });
 
 // exports.getTour = catchAsync(async (req, res, next) => {
-//   // console.log(req.params.id);
+//   // (req.params.id);
 //   const tour = await Tour.findById(req.params.id).populate('reviews');
 //   // const tour = await Tour.findById(req.params.id).populate({
 //   //   path: 'guides',

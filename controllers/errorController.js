@@ -70,7 +70,7 @@ const sendErrorProd = (err, req, res) => {
   }
   // B) Programming or other unknown error: don't leak error details
   // 1) Log error
-  console.error('ERROR ≡ƒÆÑ', err);
+  console.error('ERROR ≡💥', err);
   // 2) Send generic message
   return res.status(err.statusCode).render('error', {
     title: 'Something went wrong!',
@@ -94,7 +94,7 @@ module.exports = (err, req, res, next) => {
     if (error.name === 'ValidatorError') error = handleValidationErrorDB(error); //This is not possible becouse of new mongo Object
     if (error.name === 'JsonWebTokenError') error = handleJWTError();
     if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
-    console.log('≡ƒÿÄ', error.message);
+    console.log('≡💥', error.message);
     sendErrorProd(error, req, res);
   }
 };

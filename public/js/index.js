@@ -13,14 +13,13 @@ const logoutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-settings');
 const bookBtn = document.getElementById('book-tour');
-// console.log(userPasswordForm);
 
 // DELEGATION
 if (mapBox) {
   const locations = JSON.parse(
     document.getElementById('map').dataset.locations
   );
-  // console.log(locations);
+
   displayMap(locations);
 }
 
@@ -46,7 +45,6 @@ if (userDataForm)
     form.append('email', document.getElementById('email').value);
     form.append('photo', document.getElementById('photo').files[0]);
 
-    // console.log(form);
     updateData(form);
   });
 

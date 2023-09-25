@@ -9,6 +9,7 @@ const hpp = require('hpp');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const compression = require('compression');
 
 const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
@@ -111,12 +112,13 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
 app.use(bodyParser.json({ type: 'application/*+json' }));
 
+app.use(compression());
 // for testing
-app.use((req, res, next) => {
-  req.requestedTime = new Date().toISOString();
-  // console.log(req.cookies);
-  next();
-});
+// app.use((req, res, next) => {
+//   req.requestedTime = new Date().toISOString();
+//   // console.log(req.cookies);
+//   next();
+// });
 
 //Routes
 app.use('/', viewRouter);

@@ -80,7 +80,6 @@ exports.logout = (req, res) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) cheking if token is there
-  // console.log(req.headers.authorization);
   let token;
   if (
     req.headers.authorization &&
@@ -117,37 +116,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   res.locals.user = currentUser;
   next();
 });
-
-/// Loggdd In Middleware
-// exports.isLoggedIn = async (req, res, next) => {
-//   // 1) cheking if token is there
-//   if (req.cookies.jwt) {
-//     try {
-//       // 2) Verification token
-//       const decoded = await promisify(jwt.verify)(
-//         req.cookies.jwt,
-//         process.env.JWT_SECRET
-//       );
-
-//       // 3) Check if user still exists
-//       const currentUser = await User.findById(decoded.id);
-
-//       if (!currentUser) {
-//         return next();
-//       }
-
-//       // 4) Check if user changed password
-//       if (currentUser.changedPasswordAfter(decoded.iat)) {
-//         return next();
-//       }
-
-//       res.locals.user = currentUser;
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   }
-//   next();
-// };
 
 // Only for rendered pages, no errors!
 exports.isLoggedIn = async (req, res, next) => {
