@@ -14,15 +14,15 @@ router.get('/tour/:slug', authController.isLoggedIn, viewsController.getTour);
 router.get('/me', authController.protect, viewsController.getAccount);
 router.get('/my-tours', authController.protect, viewsController.getMyTours);
 
-// router.post(
-//   '/submit-user-data',
-//   authController.protect,
-//   userController.updateUserData
-// );
-// router.post(
-//   '/submit-user-password',
-//   authController.protect,
-//   viewsController.updateUserData
-// );
+router.post(
+  '/submit-user-data',
+  authController.protect,
+  viewsController.updateUserData
+);
+router.post(
+  '/submit-user-password',
+  authController.protect,
+  viewsController.updateUserData
+);
 
 module.exports = router;

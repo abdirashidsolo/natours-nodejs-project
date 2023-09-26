@@ -2,9 +2,7 @@ const Tour = require('../Models/tourModel');
 const User = require('../Models/userModel');
 const Booking = require('../Models/bookingModel');
 const AppError = require('../utils/appError');
-// const User = require('../Models/userModel');
 const catchAsync = require('../utils/catchAsync');
-// const { updateUserData } = require('./userController');
 
 exports.alerts = (req, res, next) => {
   const { alert } = req.query;
