@@ -5,6 +5,7 @@ import { displayMap } from './leaflet';
 import { login, logout } from './login';
 import { updateData, updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
+import { showAlert } from './alerts';
 
 // ELEMENTS
 const mapBox = document.getElementById('map');
@@ -73,4 +74,9 @@ if (bookBtn) {
     bookTour(tourId);
     // e.target.textContent = 'Book tour now!';
   });
+}
+
+const alert = document.querySelector('body').dataset.alert;
+if (alert) {
+  showAlert('success', alert, 20);
 }
