@@ -61,7 +61,7 @@ exports.getBookingsSession = catchAsync(async (req, res, next) => {
 
 const createBookingCheckout = async (session) => {
   const tour = session.client_reference_id;
-  const user = (await User.findOne({ emai: session.customer_email })).id;
+  const user = (await User.findOne({ email: session.customer_email })).id;
   const price = session.unit_amount / 100;
   await Booking.create({ tour, user, price });
 };
@@ -71,7 +71,7 @@ exports.webhookCheckout = (req, res, next) => {
 
   let event;
   try {
-    event = stripe.webhooksConstructEvent(
+    event = stripe.webhooks.ConstructEvent(
       req.body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET
