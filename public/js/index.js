@@ -78,5 +78,5 @@ if (bookBtn) {
 
 const alert = document.querySelector('body').dataset.alert;
 if (alert) {
-  showAlert('success', alert, 20);
+  showAlert('success', alert, 10);
 }
