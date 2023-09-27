@@ -1,0 +1,23 @@
+extends base
+
+
+block content
+    main.main
+        .signup-form
+            h2.heading-secondary.ma-bt-lg Sign up new account
+            form.form.form--signup(data-tourSlug=`${tourSlug}`)
+                .form__group
+                    label.form__label(for='name') Full Name
+                    input#signup-name.form__input(type='text', placeholder='John Doe', required name='name')
+                .form__group
+                    label.form__label(for='email') Email address
+                    input#signup-email.form__input(type='email', placeholder='you@example.com', required name='email')
+                .form__group.ma-bt-md
+                    label.form__label(for='password') Password
+                    input#signup-password.form__input(type='password', placeholder='••••••••', required, minlength='8' name='password')
+                .form__group.ma-bt-md
+                    label.form__label(for='passwordConfirm') Confirm Password
+                    input#signup-passwordConfirm.form__input(type='password', placeholder='••••••••', required, minlength='8' name='passwordConfirm')    
+                    
+                .form__group
+                    button.btn.btn--green Signup

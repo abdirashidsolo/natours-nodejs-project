@@ -10,8 +10,8 @@ export const login = async (username, password) => {
       data: {
         email: username,
         password,
-        withCredentials: true,
       },
+      withCredentials: true,
     });
 
     document.cookie = `jwt=${res.data.token}; max-age=10080min`;

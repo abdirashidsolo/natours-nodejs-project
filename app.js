@@ -20,6 +20,8 @@ const viewRouter = require('./routes/viewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
 const bookingController = require('./controllers/bookingController');
 
+console.log(process.env.NODE_ENV);
+
 const app = express();
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -69,8 +71,8 @@ app.use(
 
 app.use(
   cors({
+    origin: 'http://127.0.0.1:8080',
     credentials: true,
-    origin: 'http://localhost:8000',
   })
 );
 

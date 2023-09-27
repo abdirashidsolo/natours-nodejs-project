@@ -4,6 +4,12 @@ const Booking = require('../Models/bookingModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
+exports.getWelcome = (req, res, next) => {
+  res.status(200).render('userWelcome', {
+    title: 'Welcome',
+  });
+};
+
 exports.alerts = (req, res, next) => {
   const { alert } = req.query;
   if (alert)
@@ -49,7 +55,13 @@ exports.getLoginForm = catchAsync(async (req, res) => {
 
 exports.getAccount = (req, res) => {
   res.status(200).render('account', {
-    title: 'Your account',
+    title: 'Log in Your account',
+  });
+};
+
+exports.getSignupForm = (req, res) => {
+  res.status(200).render('signup', {
+    title: 'Signup an account',
   });
 };
 
