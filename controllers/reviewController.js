@@ -1,6 +1,25 @@
 const factory = require('./handleFactory');
 const Review = require('../Models/reviewModel');
+const Booking = require('../Models/bookingModel');
+const AppError = require('../utils/appError');
 // const Tour = require('../Models/tourModel');
+
+exports.checkWhetherBooked = async (req, res, next) => {
+  const booked = await Booking.findOne({
+    tour: req.body.tour,
+    user: req.body.user,
+  });
+
+  if (!booked)
+    next(
+      new AppError(
+        "You can't review, to review please book this tour first",
+        401
+      )
+    );
+
+  next();
+};
 
 // exports.getReviews = catchAysnc(async (req, res, next) => {
 

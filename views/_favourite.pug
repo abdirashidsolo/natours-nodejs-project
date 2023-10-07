@@ -1,0 +1,20 @@
+if favourites
+    each favourite in favourites
+        .favourite
+        
+            img.favourite__img(src=`/img/tours/${favourite.imageCover}` alt=`Photo of ${favourite.name}`) 
+            
+
+            .favourite__details
+                h2.favourite__heading=`${favourite.name}`
+                p.favourite__text=`${favourite.summary}`
+
+            .favourite__footer
+                a.btn--green.favourite__btn(href=`/tour/${favourite.slug}`) Details
+    else 
+        .favourite  
+            .favourite__details
+                p.favourite__text-empty You have not any favourites                
+
+  
+                

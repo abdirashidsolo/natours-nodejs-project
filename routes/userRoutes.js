@@ -10,12 +10,14 @@ router.post('/login', authController.login);
 router.get('/logout', authController.logout);
 
 router.post('/forgetPassword', authController.forgetPassword);
-router.post('/resetPassword/:token', authController.resetPassword);
+router.post('/saveResetPassword/:userId', authController.saveResetPassword);
+router.get('/resetPassword/:token', authController.resetPassword);
 
 // This Middleware works on all of the following
 
 router.use(authController.protect);
 
+router.patch('/liked/:id', userController.addliked);
 router.patch('/updateMyPassword', authController.updatePassword);
 router.patch(
   '/updateMe',

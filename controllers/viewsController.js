@@ -1,8 +1,15 @@
 const Tour = require('../Models/tourModel');
 const User = require('../Models/userModel');
+const Review = require('../Models/reviewModel');
 const Booking = require('../Models/bookingModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
+
+exports.getForgetForm = (req, res, next) => {
+  res.status(200).render('forgetForm', {
+    title: 'Forgot my password',
+  });
+};
 
 exports.getWelcome = (req, res, next) => {
   res.status(200).render('userWelcome', {
@@ -55,7 +62,7 @@ exports.getLoginForm = catchAsync(async (req, res) => {
 
 exports.getAccount = (req, res) => {
   res.status(200).render('account', {
-    title: 'Log in Your account',
+    title: 'In Your account',
   });
 };
 
@@ -95,3 +102,53 @@ exports.updateUserData = catchAsync(async (req, res) => {
     user: updatedUser,
   });
 });
+
+exports.displayReviewSection = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const tourId = (await Tour.findOne({ slug: req.params.slug })).id;
+    // console.log(`Ueser: ${userId}`);
+    // console.log(`Tour: ${tourId}`);
+
+    const booking = await Booking.findOne({ tour: tourId, user: userId });
+
+    if (!booking) return next();
+
+    res.locals.showReviewSection = true;
+
+    const review = await Review.findOne({ tour: tourId, user: userId });
+
+    if (!review) {
+      res.locals.userRatedTour = false;
+      return next();
+    }
+
+    res.locals.userRatedTour = true;
+
+    next();
+  } catch (error) {
+    console.log(error);
+    return next();
+  }
+};
+
+exports.renderFavourite = async (req, res, next) => {
+  if (!req.user) return next();
+
+  const userId = req.user.id;
+
+  const tours = (await User.findById(userId)).liked;
+  // console.log(tours);
+
+  const favourites = [];
+
+  await Promise.all(
+    tours.map(async (id) => {
+      const tour = await Tour.findById(id);
+      favourites.push(tour);
+    })
+  );
+  // console.log(favourites);
+  res.locals.favourites = favourites;
+  next();
+};

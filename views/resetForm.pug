@@ -1,0 +1,17 @@
+extends base
+
+
+block content
+    main.main
+        .login-form.saveReset-form
+            h2.heading-secondary.ma-bt-lg Reset your password
+            form.form.form--saveReset
+                .form__group.ma-bt-md
+                    label.form__label(for='password') Password
+                    input#resetPassword.form__input(type='password', placeholder='••••••••', required, minlength='8' name='password')
+                .form__group.ma-bt-md
+                    label.form__label(for='passwordConfirm') Password Conform
+                    input#resetPasswordConfirm.form__input(type='password', placeholder='••••••••', required, minlength='8' name='passwordConfirm')
+                .form__group
+                    button#saveResetBtn.btn.btn--green(data-user-id=`${userId}`) Save
+                    

@@ -121,6 +121,25 @@ exports.postUser = (req, res) => {
   });
 };
 
+exports.addliked = async (req, res) => {
+  const tourId = req.params.id;
+  const { liked } = req.body;
+
+  if (liked === 'add') {
+    await User.findByIdAndUpdate(req.user.id, {
+      $push: { liked: tourId },
+    });
+  } else {
+    await User.findByIdAndUpdate(req.user.id, {
+      $pull: { liked: tourId },
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+  });
+};
+
 exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User);
 exports.updateUser = factory.updateOne(User);

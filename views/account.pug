@@ -1,7 +1,7 @@
 extend base
 
 mixin navItem(link, text, icon, active)
-    li(class=`${active ? 'side-nav--active' : ''}`)
+    li(class=`${active ? 'side-nav--active' : ''} side-nav__${icon} side-nav`)
         a(href=`${link}`)
             svg
                 use(xlink:href=`img/icons.svg#icon-${icon}`)
@@ -30,6 +30,7 @@ block content
 
             .user-view__content
                 .user-view__form-container
+
                     h2.heading-secondary.ma-bt-md Your account settings
                     //- WHITHOUT API 
                     //- form.form.form-user-data(action="/submit-user-data" method="POST" enctype="multipart/form-data)
@@ -64,3 +65,9 @@ block content
                             input#password-confirm.form__input(type='password', placeholder='••••••••', required, minlength='8')
                         .form__group.right
                             button.btn.btn--small.btn--green.btn--save-password Save password
+
+
+
+
+
+                

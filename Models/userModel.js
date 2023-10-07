@@ -16,7 +16,19 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email address'],
   },
+
+  liked: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Tour',
+      unique: [
+        true,
+        'User can not have single tour multible times as liked tour ',
+      ],
+    },
+  ],
   photo: { type: String, default: 'default.jpg' },
+
   password: {
     type: String,
     required: [true, 'Please provide your password'],
@@ -36,6 +48,10 @@ const userSchema = new mongoose.Schema({
   },
   passwordResetToken: String,
   passwordResetExpires: Date,
+
+  signupVerificationToken: String,
+  signupVerificationExpires: Date,
+
   active: {
     type: Boolean,
     default: true,
@@ -110,6 +126,18 @@ userSchema.methods.createPasswordResetToken = function () {
 
   // console.log(token);
   // console.log(this.passwordResetToken);
+
+  return token;
+};
+
+userSchema.methods.createSignupVerificationToken = function () {
+  const token = crypto.randomBytes(32).toString('hex');
+
+  this.signupVerificationToken = crypto
+    .createHash('sha256')
+    .update(token)
+    .digest('hex');
+  this.signupVerificationExpires = Date.now() + 24 * 60 * 60 * 1000;
 
   return token;
 };

@@ -2,7 +2,13 @@
 import '@babel/polyfill';
 import 'regenerator-runtime/runtime';
 import { displayMap } from './leaflet';
-import { login, logout } from './login';
+import {
+  login,
+  logout,
+  forgotPassword,
+  saveResetPassword,
+  addlikedTours,
+} from './login';
 import { updateData, updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
 import { showAlert } from './alerts';
@@ -16,6 +22,11 @@ const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-settings');
 const bookBtn = document.getElementById('book-tour');
 const signupForm = document.querySelector('.form--signup');
+const forgotForm = document.querySelector('.forgot-form');
+const saveResetForm = document.querySelector('.saveReset-form');
+const likedHeart = document.querySelector('.detail__heartIcon');
+const favouriteBtn = document.querySelector('.header__favourite');
+const userView = document.querySelector('.user-view');
 
 // DELEGATION
 if (mapBox) {
@@ -53,7 +64,14 @@ if (logoutBtn)
     logout();
   });
 
-if (userDataForm)
+if (userDataForm) {
+  document.getElementById('photo').addEventListener('change', (e) => {
+    e.preventDefault();
+    const imgUrl = URL.createObjectURL(
+      document.getElementById('photo').files[0]
+    );
+    document.querySelector('.form__user-photo').src = imgUrl;
+  });
   userDataForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const form = new FormData();
@@ -63,7 +81,7 @@ if (userDataForm)
 
     updateData(form);
   });
-
+}
 if (userPasswordForm) {
   userPasswordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -93,3 +111,45 @@ if (bookBtn) {
 
 const alertMessage = document.querySelector('body').dataset.alert;
 if (alertMessage) showAlert('success', alertMessage, 20);
+
+// FORGOT FORM
+if (forgotForm)
+  forgotForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.querySelector('#emailForgot').value;
+    console.log(email);
+    forgotPassword(email);
+  });
+
+if (saveResetForm)
+  document.querySelector('.form--saveReset').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = document.querySelector('#saveResetBtn').dataset.userId;
+    console.log(id);
+    const password = document.querySelector('#resetPassword').value;
+    const passwordConfirm = document.querySelector(
+      '#resetPasswordConfirm'
+    ).value;
+    saveResetPassword(password, passwordConfirm, id);
+  });
+
+// Like and Unlike implementations
+
+if (likedHeart) {
+  likedHeart.addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log(likedHeart.dataset.like);
+    const { id } = likedHeart.dataset;
+    if (likedHeart.dataset.like === 'unlike') addlikedTours('add', id);
+    else addlikedTours('remove', id);
+  });
+}
+
+// Display favourite
+if (favouriteBtn) {
+  favouriteBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log('clicked');
+    document.querySelector('.favourite__container').classList.toggle('visible');
+  });
+}

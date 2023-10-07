@@ -12,6 +12,7 @@ const signToken = (id) => {
   });
   return token;
 };
+
 //
 const createTokenAndSend = (user, statusCode, res) => {
   const token = signToken(user._id);
@@ -25,7 +26,7 @@ const createTokenAndSend = (user, statusCode, res) => {
 
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-  res.cookie('JWT', token, cookieOptions);
+  res.cookie('jwt', token, cookieOptions);
   user.password = undefined;
 
   res.status(statusCode).json({
@@ -49,15 +50,55 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
-    active: false,
   });
 
-  const url = `${req.protocol}://${req.get('host')}/me`;
+  const signupToken = newUser.createSignupVerificationToken();
+  await newUser.save({ validateBeforeSave: false });
 
-  await new Email(newUser, url).sendWelcome();
+  try {
+    const tokenURL = `${req.protocol}://${req.get(
+      'host'
+    )}/verify/${signupToken}`;
 
-  createTokenAndSend(newUser, 201, res);
+    await new Email(newUser, tokenURL).sendWelcome();
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Verification token sent to the email',
+    });
+  } catch (error) {
+    newUser.signupVerificationToken = undefined;
+    newUser.signupVerificationExpires = undefined;
+    await newUser.save({ validateBeforeSave: false });
+
+    return next(
+      new AppError(
+        'There was an error sending varification token. Please try again leter!',
+        500
+      )
+    );
+  }
 });
+
+exports.verifyUser = async (req, res, next) => {
+  const token = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  const user = await User.findOne({
+    signupVerificationToken: token,
+    signupVerificationExpires: { $gt: Date.now() },
+  });
+
+  if (!user) return next(new AppError('Token is not valid or expired ', 401));
+
+  user.signupVerificationToken = undefined;
+  user.signupVerificationExpires = undefined;
+  await user.save();
+
+  createTokenAndSend(user, 201, res);
+};
 
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
@@ -148,6 +189,7 @@ exports.isLoggedIn = async (req, res, next) => {
 
       // THERE IS A LOGGED IN USER
       res.locals.user = currentUser;
+      req.user = currentUser;
       return next();
     } catch (err) {
       return next();
@@ -171,6 +213,7 @@ exports.restrictTo = (...roles) => {
 
 exports.forgetPassword = catchAsync(async (req, res, next) => {
   // 1) Get user pased on posted Email Address
+  // console.log(req.body.email);
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
     return next(new AppError('There is no user with that email.', 404));
@@ -190,7 +233,7 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
 
     res
       .status(200)
-      .json({ Status: 'success', Message: 'Reset token sent to the email' });
+      .json({ status: 'success', message: 'Reset token sent to the email' });
   } catch (error) {
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
@@ -212,6 +255,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     .createHash('sha256')
     .update(req.params.token)
     .digest('hex');
+
   const user = await User.findOne({
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() },
@@ -221,22 +265,28 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   if (!user) {
     return next(new AppError('Invalid or expired token!.', 401));
   }
+
+  res.status(200).render('resetForm', {
+    title: 'Reset password',
+    userId: user.id,
+  });
+});
+
+exports.saveResetPassword = catchAsync(async (req, res) => {
+  const { userId } = req.params;
+  // console.log(userId);
+
+  const user = await User.findById(userId);
+
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
 
-  await user.save();
+  const currentUser = await user.save({ validateBeforeSave: true });
 
-  // 3) Update passwordChangedAt property for the user
-
-  createTokenAndSend(user, 200, res);
-  // const token = signToken(user._id);
-
-  // res.status(200).json({
-  //   status: 'success',
-  //   token,
-  // });
+  // console.log(currentUser);
+  createTokenAndSend(currentUser, 200, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
