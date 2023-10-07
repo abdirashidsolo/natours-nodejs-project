@@ -58,8 +58,10 @@ if (signupForm)
         'signup-passwordConfirm'
       ).value;
       document.querySelector('.btn--singup').textContent = 'Signing Up...';
+      document.querySelector('.btn--singup').disabled = true;
       await signup({ name, email, password, passwordConfirm });
       document.querySelector('.btn--singup').textContent = 'Sign Up';
+      document.querySelector('.btn--singup').disabled = false;
     });
 
 ///LOG OUT
