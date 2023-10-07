@@ -7,7 +7,8 @@ const handleJWTError = () =>
   new AppError('Invalid token! please log in again', 401);
 
 const handleDuplicateFieldDB = (err) => {
-  const value = err.keyValue.name;
+  const value = Object.keys(err.keyValue);
+  // console.log(err);
   const message = `Duplicate field value ${value} please use another value!`;
   return new AppError(message, 400);
 };

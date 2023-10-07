@@ -14,7 +14,7 @@ const signToken = (id) => {
 };
 
 //
-const createTokenAndSend = (user, statusCode, res) => {
+const createTokenAndSend = (user, statusCode, res, send = true) => {
   const token = signToken(user._id);
   const cookieOptions = {
     expires: new Date(
@@ -29,6 +29,8 @@ const createTokenAndSend = (user, statusCode, res) => {
   res.cookie('jwt', token, cookieOptions);
   user.password = undefined;
 
+  if (!send) return res.cookie('jwt', token, cookieOptions);
+
   res.status(statusCode).json({
     status: 'success',
     token,
@@ -39,11 +41,25 @@ const createTokenAndSend = (user, statusCode, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email });
-  if (user)
+  const user = await User.findOne({
+    email: req.body.email,
+    verified: { $ne: false },
+  });
+  if (user) {
     return res
       .status(409)
       .json({ status: 'fail', message: 'Email is invalid or already taken' });
+  }
+
+  //Check if the user created but not verified if so delete it
+  const notVerifiedUser = await User.findOne({
+    email: req.body.email,
+    verified: { $in: [false] },
+  });
+
+  if (notVerifiedUser) {
+    notVerifiedUser.delete();
+  }
 
   const newUser = await User.create({
     name: req.body.name,
@@ -67,10 +83,7 @@ exports.signup = catchAsync(async (req, res, next) => {
       message: 'Verification token sent to the email',
     });
   } catch (error) {
-    newUser.signupVerificationToken = undefined;
-    newUser.signupVerificationExpires = undefined;
-    await newUser.save({ validateBeforeSave: false });
-
+    await newUser.delete();
     return next(
       new AppError(
         'There was an error sending varification token. Please try again leter!',
@@ -81,23 +94,28 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 exports.verifyUser = async (req, res, next) => {
-  const token = crypto
+  const verifyToken = crypto
     .createHash('sha256')
     .update(req.params.token)
     .digest('hex');
 
   const user = await User.findOne({
-    signupVerificationToken: token,
+    signupVerificationToken: verifyToken,
     signupVerificationExpires: { $gt: Date.now() },
   });
 
-  if (!user) return next(new AppError('Token is not valid or expired ', 401));
+  if (!user) return next(new AppError('Token is not valid or expired', 401));
 
+  user.verified = undefined;
   user.signupVerificationToken = undefined;
   user.signupVerificationExpires = undefined;
-  await user.save();
 
-  createTokenAndSend(user, 201, res);
+  await user.save({ validateBeforeSave: false });
+
+  createTokenAndSend(user, 201, res, false);
+  // signToken(user.id);
+
+  res.redirect('/');
 };
 
 exports.login = catchAsync(async (req, res, next) => {

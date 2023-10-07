@@ -57,6 +57,11 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
+  verified: {
+    type: Boolean,
+    default: false,
+    // select: false,
+  },
   role: {
     type: String,
     default: 'user',

@@ -12617,20 +12617,40 @@ if (loginForm) document.querySelector('.form').addEventListener('submit', functi
   var password = document.getElementById('password').value;
   (0, _login.login)(email, password);
 });
-if (signupForm) document.querySelector('.form').addEventListener('submit', function (e) {
-  e.preventDefault();
-  console.log('Submited');
-  var name = document.getElementById('signup-name').value;
-  var email = document.getElementById('signup-email').value;
-  var password = document.getElementById('signup-password').value;
-  var passwordConfirm = document.getElementById('signup-passwordConfirm').value;
-  (0, _signup.signup)({
-    name: name,
-    email: email,
-    password: password,
-    passwordConfirm: passwordConfirm
-  });
-});
+if (signupForm) document.querySelector('.form').addEventListener('submit', /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(e) {
+    var name, email, password, passwordConfirm;
+    return _regeneratorRuntime().wrap(function _callee$(_context) {
+      while (1) switch (_context.prev = _context.next) {
+        case 0:
+          e.preventDefault();
+          // console.log('Submited');
+          name = document.getElementById('signup-name').value;
+          email = document.getElementById('signup-email').value;
+          password = document.getElementById('signup-password').value;
+          passwordConfirm = document.getElementById('signup-passwordConfirm').value;
+          document.querySelector('.btn--singup').textContent = 'Signing Up...';
+          _context.next = 8;
+          return (0, _signup.signup)({
+            name: name,
+            email: email,
+            password: password,
+            passwordConfirm: passwordConfirm
+          });
+        case 8:
+          document.querySelector('.btn--singup').textContent = 'Sign Up';
+        case 9:
+        case "end":
+          return _context.stop();
+      }
+    }, _callee);
+  }));
+  return function (_x) {
+    return _ref.apply(this, arguments);
+  };
+}());
+
+///LOG OUT
 if (logoutBtn) logoutBtn.addEventListener('click', function (e) {
   e.preventDefault();
   (0, _login.logout)();
@@ -12652,17 +12672,17 @@ if (userDataForm) {
 }
 if (userPasswordForm) {
   userPasswordForm.addEventListener('submit', /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(e) {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
       var passwordCurrent, password, passwordConfirm;
-      return _regeneratorRuntime().wrap(function _callee$(_context) {
-        while (1) switch (_context.prev = _context.next) {
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
           case 0:
             e.preventDefault();
             document.querySelector('.btn--save-password').textContent = 'Updating...';
             passwordCurrent = document.getElementById('password-current').value;
             password = document.getElementById('password').value;
             passwordConfirm = document.getElementById('password-confirm').value; // console.log({ passwordCurrent, password, passwordConfirm });
-            _context.next = 7;
+            _context2.next = 7;
             return (0, _updateSettings.updateSettings)(passwordCurrent, password, passwordConfirm);
           case 7:
             document.querySelector('.btn--save-password').textContent = 'Save password';
@@ -12671,12 +12691,12 @@ if (userPasswordForm) {
             document.getElementById('password-confirm').value = '';
           case 11:
           case "end":
-            return _context.stop();
+            return _context2.stop();
         }
-      }, _callee);
+      }, _callee2);
     }));
-    return function (_x) {
-      return _ref.apply(this, arguments);
+    return function (_x2) {
+      return _ref2.apply(this, arguments);
     };
   }());
 }

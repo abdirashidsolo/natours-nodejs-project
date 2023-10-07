@@ -46,18 +46,23 @@ if (loginForm)
   });
 
 if (signupForm)
-  document.querySelector('.form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    console.log('Submited');
-    const name = document.getElementById('signup-name').value;
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
-    const passwordConfirm = document.getElementById(
-      'signup-passwordConfirm'
-    ).value;
-    signup({ name, email, password, passwordConfirm });
-  });
+  document
+    .querySelector('.form')
+    .addEventListener('submit', async function (e) {
+      e.preventDefault();
+      // console.log('Submited');
+      const name = document.getElementById('signup-name').value;
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      const passwordConfirm = document.getElementById(
+        'signup-passwordConfirm'
+      ).value;
+      document.querySelector('.btn--singup').textContent = 'Signing Up...';
+      await signup({ name, email, password, passwordConfirm });
+      document.querySelector('.btn--singup').textContent = 'Sign Up';
+    });
 
+///LOG OUT
 if (logoutBtn)
   logoutBtn.addEventListener('click', (e) => {
     e.preventDefault();
